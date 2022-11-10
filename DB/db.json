@@ -3,8 +3,8 @@
     {
       "id": 1,
       "productName": "버그를 Java라 버그잡는 개리씨 키링 개발자키링 금속키링",
-      "price": "22500",
-      "stockCount": "10",
+      "price": "11500",
+      "stockCount": "100",
       "thumbnailImg": "asset/img/1/thumbnailImg.jpg",
       "option": [],
       "discountRate": 0,

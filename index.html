@@ -60,6 +60,7 @@
             background-color: lightyellow;
             border-style: none;
             border-radius: 10px;
+            font-weight: 700;
             color: #96a9d1;
         }
 
@@ -209,13 +210,13 @@
 					body: JSON.stringify(updateInfo)
                 })
                 .then(() => {
-                    h2.style.display = "block"
-                    p.style.display = "block"
-                    span.style.display = "block"
+                    title.style.display = "block"
+                    price.style.display = "block"
+                    stock.style.display = "block"
 
-                    h2.textContent = updateInfo.productName
-                    p.textContent = updateInfo.price
-                    span.textContent = updateInfo.stockCount
+                    title.innerText = updateInfo.productName
+                    price.innerText = updateInfo.price
+                    stock.innerText = updateInfo.stockCount
 
                     titleInpVal.remove()
                     priceInpVal.remove()
