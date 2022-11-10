@@ -5,8 +5,236 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>제코배 스토어 Admin</title>
+    <style>
+        body {
+            background-color: #e6f0ff;
+        }
+
+        h1 {
+            margin-top: 100px;
+            color: #96a9d1;
+            text-align: center;
+        }
+
+        .wrapper {
+            box-sizing: border-box;
+            margin: 30px auto 70px;
+            display: flex;
+            flex-direction: column;
+            width: 500px;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(6, 29, 75, 0.5);
+        }
+
+        .inp-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        section + section{
+            margin-top: 50px;
+        }
+
+        label {
+            color: #6b6b6b;
+        }
+
+        input {
+            border-style: none;
+            border-radius: 10px;
+            background-color: #96a9d1;
+            color: #fff;
+            padding: 5px;
+        }
+        
+        label + input {
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        #btn-load, #btn-register {
+            margin-top: 10px;
+            padding: 5px;
+            background-color: lightyellow;
+            border-style: none;
+            border-radius: 10px;
+            color: #96a9d1;
+        }
+
+    </style>
 </head>
 <body>
-    
+    <h1>제주코딩베이스 스토어 Admin</h1>
+
+    <div class="wrapper">
+        <section class="inp-box">
+            <label for="inp-name">상품이름</label>
+            <input id="inp-name" type="text" />
+        
+            <label for="inp-price">제품가격</label>
+            <input id="inp-price" type="number" />
+        
+            <label for="inp-stock">재고</label>
+            <input id="inp-stock" type="number" />
+        
+            <button id="btn-load">상품 불러오기</button>
+            <button type="button" id="btn-register">상품 등록하기</button>
+        </section>
+    </div>
+
+    <script>
+        // 상품 목록 리스트 만들기
+        const createList = (item) => {
+            const $container = document.createElement("section");
+            const $productImg = document.createElement("img")
+            const $productName = document.createElement("h2")
+            const $price = document.createElement("p")
+            const $stock = document.createElement("span")
+            const $btnUpdate = document.createElement("button")
+            const $btnDelete = document.createElement("button")
+
+            $productImg.src = `http://test.api.weniv.co.kr/${item.thumbnailImg}`
+            $productName.innerText = item.productName;
+            $price.innerText = `${item.price} ₩`;
+            $stock.innerText = `재고: ${item.stockCount}`
+            $btnUpdate.innerText = "수정"
+            $btnDelete.innerText = "삭제"
+
+            $container.appendChild($productImg);
+            $container.appendChild($btnUpdate);
+            $container.appendChild($btnDelete);
+            $container.appendChild($productName);
+            $container.appendChild($price);
+            $container.appendChild($stock);
+            
+
+            const wrapper = document.querySelector(".wrapper")
+            wrapper.appendChild($container);
+
+            $btnDelete.addEventListener('click', () => {deleteItem(item.id, $container)});
+            $btnUpdate.addEventListener('click', () => {updateItem(item, $container)});
+        }
+
+
+        // Read
+        const btnLoad = document.querySelector("#btn-load");
+        btnLoad.addEventListener('click', (e) => {
+            fetch("http://localhost:3005/product", {
+                method: "GET"
+            })
+            .then(response => response.json())
+            .then(data => {
+                for (item of data) {
+                    createList(item);
+                }
+            });
+        });
+
+
+        // Create
+        const btnRegister = document.querySelector("#btn-register");
+        btnRegister.addEventListener('click', (e) => {
+            const productInfo = {
+                productName: document.querySelector("#inp-name").value,
+                price: document.querySelector("#inp-price").value,
+                stockCount:document.querySelector("#inp-stock").value,
+                viewCount: 0
+            };
+
+            fetch("http://localhost:3005/product", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(productInfo)
+            })
+            .then(response => response.json())
+            .then(item => {
+                createList(item)
+            });
+        });
+
+
+        // Update
+        const updateItem = (item, container) => {
+            const title = container.querySelector("h2")
+            const price = container.querySelector("p")
+            const stock = container.querySelector("span")
+            
+
+            // 기능 1. 클릭 시 수정할 내용을 작성할 input을 생성
+                // 1) 목록에서 수정하기 버튼 누름 -> 기능 1 동작(input 생성)
+            // 기능 2. 클릭 시 input에 작성된 내용을 h2, p 태그에 반영
+                // 2) input 요소 나타나서 value 수정 후 수정하기 누름(input이 이미 있음) -> 기능 2 동작
+
+            if(!container.querySelector("input")) {
+                const titleInp = document.createElement("input")
+                const priceInp = document.createElement("input")
+                const stockInp = document.createElement("input")
+
+                titleInp.classList.add("title-inp")
+                priceInp.classList.add("price-inp")
+                stockInp.classList.add("stock-inp")
+
+                titleInp.type = "text"
+                titleInp.value = title.innerText
+                priceInp.type = "number"
+                priceInp.value = parseInt(price.innerText.slice(0,-2))
+                stockInp.type = "number"
+                stockInp.value = parseInt(stock.innerText.slice(3))
+
+                title.style.display = "none"
+                price.style.display = "none"
+                stock.style.display = "none"
+
+                container.appendChild(titleInp)
+                container.appendChild(priceInp)
+                container.appendChild(stockInp)
+
+            } else {
+                const titleInpVal = document.querySelector(".title-inp")
+                const priceInpVal = document.querySelector(".price-inp")
+                const stockInpVal = document.querySelector(".stock-inp")
+
+                const updateInfo = {
+                    "productName" : titleInpVal.value,
+                    "price" : priceInpVal.value,
+                    "stockCount" : stockInpVal.value
+                }
+
+
+                fetch(`http://localhost:3005/product/${item.id}`, {
+                    method: "PATCH",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(updateInfo)
+                })
+                .then(() => {
+                    h2.style.display = "block"
+                    p.style.display = "block"
+                    span.style.display = "block"
+
+                    h2.textContent = updateInfo.productName
+                    p.textContent = updateInfo.price
+                    span.textContent = updateInfo.stockCount
+
+                    titleInpVal.remove()
+                    priceInpVal.remove()
+                    stockInpVal.remove()
+                })
+            }
+        }
+        
+
+        // Delete
+        const deleteItem = (id, container) => {
+            fetch(`http://localhost:3005/product/${id}`, {
+                method: "DELETE"
+            })
+            .then(() => {
+                container.remove();
+            })
+        }
+
+    </script>
 </body>
 </html>
