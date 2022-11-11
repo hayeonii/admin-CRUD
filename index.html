@@ -28,13 +28,22 @@
             box-shadow: 0 0 10px rgba(6, 29, 75, 0.5);
         }
 
-        .inp-box {
+        section {
             display: flex;
             flex-direction: column;
+            align-items: center;
         }
 
         section + section{
             margin-top: 50px;
+        }
+
+        .inp-box {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
         }
 
         label {
@@ -42,16 +51,21 @@
         }
 
         input {
+            width: 350px;
             border-style: none;
             border-radius: 10px;
             background-color: #96a9d1;
             color: #fff;
             padding: 5px;
         }
-        
+
         label + input {
             margin-top: 5px;
             margin-bottom: 15px;
+        }
+
+        input + input {
+            margin-top: 10px;
         }
 
         #btn-load, #btn-register {
@@ -64,24 +78,66 @@
             color: #96a9d1;
         }
 
+        #btn-load {
+            margin-right: 20px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 5px;
+            width: 100px;
+            background-color: lightyellow;
+            border-style: none;
+            border-radius: 10px;
+            font-weight: 700;
+            color: #96a9d1;
+        }
+
+        img {
+            width: 400px;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        h2 {
+            margin-top: 30px;
+            font-size: 18px;
+            color: #96a9d1;
+        }
+
+        p, span {
+            font-size: 14px;
+            color: #6b6b6b;
+        }
     </style>
 </head>
 <body>
     <h1>제주코딩베이스 스토어 Admin</h1>
 
     <div class="wrapper">
-        <section class="inp-box">
-            <label for="inp-name">상품이름</label>
-            <input id="inp-name" type="text" />
+        <section>
+            <div class="inp-box">
+                <label for="inp-name">상품이름</label>
+                <input id="inp-name" type="text" />
+            </div>
+            
         
-            <label for="inp-price">제품가격</label>
-            <input id="inp-price" type="number" />
+            <div class="inp-box">
+                <label for="inp-price">제품가격</label>
+                <input id="inp-price" type="number" />
+            </div>
+            
         
-            <label for="inp-stock">재고</label>
-            <input id="inp-stock" type="number" />
+            <div class="inp-box">
+                <label for="inp-stock">재고</label>
+                <input id="inp-stock" type="number" />
+            </div>
+            
         
-            <button id="btn-load">상품 불러오기</button>
-            <button type="button" id="btn-register">상품 등록하기</button>
+            <div class="inp-btns">
+                <button id="btn-load">상품 불러오기</button>
+                <button type="button" id="btn-register">상품 등록하기</button>
+            </div>
         </section>
     </div>
 
@@ -104,11 +160,11 @@
             $btnDelete.innerText = "삭제"
 
             $container.appendChild($productImg);
-            $container.appendChild($btnUpdate);
-            $container.appendChild($btnDelete);
             $container.appendChild($productName);
             $container.appendChild($price);
             $container.appendChild($stock);
+            $container.appendChild($btnUpdate);
+            $container.appendChild($btnDelete);
             
 
             const wrapper = document.querySelector(".wrapper")
